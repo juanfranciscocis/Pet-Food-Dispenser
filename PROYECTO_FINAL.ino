@@ -4,6 +4,7 @@ const int trigPin = 13;
 const int echoPin = 12;
 long duration;
 int distanceCm, distanceInch;
+float sensorToFloor = 11.5;
 #include<Servo.h>
 Servo Myservo;
 int pos;
@@ -33,9 +34,10 @@ int menuOpt = 0;
 
 //MENU 1
 int foodQuantity = -48; //-48
-int foodTime = 1; //-48
+int foodTime = -48; //-48
 
 //MENU 2
+boolean setupComplete = false;
 
 void setup() {
   Myservo.attach(3);
@@ -43,6 +45,7 @@ void setup() {
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
   Serial.begin(9600); // Starting Serial Terminal
+  closeDoor();
 
 }
 
@@ -138,12 +141,32 @@ void loop() {
     lcd.print(" MIN");
     delay(3000);
 
+    setupComplete = true;
     menuOpt = 2;
 
 
   }
 
   if (menuOpt == 2) {
+    if(setupComplete == false){
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("SETUP NO");
+      lcd.setCursor(0, 1);
+      lcd.print("REALIZADO");
+      lcd.setCursor(0, 1);
+      delay(3000);
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("TODO POR");
+      lcd.setCursor(0, 1);
+      lcd.print("DEFECTO...");
+      lcd.setCursor(0, 1);
+      foodQuantity = 5;
+      foodTime = 1;
+      setupComplete = true;
+      delay(3000);
+    }
     closeDoor();
     lcd.clear();
     lcd.setCursor(0, 0);
@@ -158,15 +181,15 @@ void loop() {
     lcd.print(foodTime);
     lcd.print(" MIN ESPERE...");
     delay(foodTime*60000); //foodTime*60000
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("ALIMENTANDO...");
-    int serving = 11;
-    while (serving >= 8) {
+    int serving = sensorToFloor;
+    while (serving >= sensorToFloor-foodQuantity ) {
       serving = returnAltitud();
       openDoor();
     }
     closeDoor();
+
+
+
 
 
 
@@ -184,21 +207,36 @@ void loop() {
 }
 
 int returnAltitud(){
+  while(true){
+
+  
   digitalWrite(trigPin, LOW);
-  delayMicroseconds(50);
+  delayMicroseconds(10);
   digitalWrite(trigPin, HIGH);
-  delayMicroseconds(50);
+  delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
   distanceCm = duration * 0.034 / 2;
   Serial.print(distanceCm);
   Serial.print("cm");
   Serial.println();
-  Serial.print(duration);
-  Serial.print("duration");
-  Serial.println();
-  delay(1000);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("ALIMENTANDO...");
+  lcd.setCursor(0, 1);
+  float percent = ((distanceCm-foodQuantity)*100)/(sensorToFloor-foodQuantity);
+  if(percent < 0 || percent >=90 ){
+    percent = 100;
+
+  }
+  lcd.print(percent);
+  lcd.print("%");
+  delay(250);
+  if(distanceCm <= 1 ){
+    continue;
+  }
   return distanceCm;
+  }
 }
 
 void openDoor(){
