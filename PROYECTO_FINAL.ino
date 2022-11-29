@@ -4,7 +4,7 @@ const int trigPin = 13;
 const int echoPin = 12;
 long duration;
 int distanceCm, distanceInch;
-float sensorToFloor = 11.5;
+float sensorToFloor = 12;
 #include<Servo.h>
 Servo Myservo;
 int pos;
@@ -162,7 +162,7 @@ void loop() {
       lcd.setCursor(0, 1);
       lcd.print("DEFECTO...");
       lcd.setCursor(0, 1);
-      foodQuantity = 5;
+      foodQuantity = 3;
       foodTime = 1;
       setupComplete = true;
       delay(3000);
@@ -180,11 +180,34 @@ void loop() {
     lcd.setCursor(0, 1);
     lcd.print(foodTime);
     lcd.print(" MIN ESPERE...");
-    delay(foodTime*60000); //foodTime*60000
-    int serving = sensorToFloor;
-    while (serving >= sensorToFloor-foodQuantity ) {
+    delay(foodTime*6000); //foodTime*60000
+    int serving = 12;
+    while (serving != (sensorToFloor-foodQuantity) ) {
       serving = returnAltitud();
       openDoor();
+      if (serving < (sensorToFloor-foodQuantity) ) {
+        break;
+      }
+    }
+    closeDoor();
+
+    serving = 12;
+    while (serving != (sensorToFloor-foodQuantity) ) {
+      serving = returnAltitud();
+      openDoor();
+      if (serving < (sensorToFloor-foodQuantity) ) {
+        break;
+      }
+    }
+    closeDoor();
+
+    serving = 12;
+    while (serving != (sensorToFloor-foodQuantity) ) {
+      serving = returnAltitud();
+      openDoor();
+      if (serving < (sensorToFloor-foodQuantity) ) {
+        break;
+      }
     }
     closeDoor();
 
@@ -224,17 +247,17 @@ int returnAltitud(){
   lcd.setCursor(0, 0);
   lcd.print("ALIMENTANDO...");
   lcd.setCursor(0, 1);
-  float percent = ((distanceCm-foodQuantity)*100)/(sensorToFloor-foodQuantity);
-  if(percent < 0 || percent >=90 ){
-    percent = 100;
+  //float percent = ((distanceCm-foodQuantity)*100)/(sensorToFloor);
+  //if(percent < 0 || percent >=90 ){
+    //percent = 100;
 
-  }
-  lcd.print(percent);
-  lcd.print("%");
-  delay(250);
-  if(distanceCm <= 1 ){
-    continue;
-  }
+  //}
+  lcd.print(distanceCm);
+  lcd.print(" CM");
+  delay(1000);
+  //if(distanceCm <= 1 ){
+    //continue;
+  //}
   return distanceCm;
   }
 }
