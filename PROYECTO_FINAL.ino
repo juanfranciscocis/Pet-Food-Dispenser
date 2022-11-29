@@ -247,17 +247,12 @@ int returnAltitud(){
   lcd.setCursor(0, 0);
   lcd.print("ALIMENTANDO...");
   lcd.setCursor(0, 1);
-  //float percent = ((distanceCm-foodQuantity)*100)/(sensorToFloor);
-  //if(percent < 0 || percent >=90 ){
-    //percent = 100;
-
-  //}
   lcd.print(distanceCm);
   lcd.print(" CM");
   delay(1000);
-  //if(distanceCm <= 1 ){
-    //continue;
-  //}
+  if(distanceCm <= 1 ){
+    continue;
+  }
   return distanceCm;
   }
 }
