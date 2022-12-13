@@ -1,6 +1,11 @@
 # Pet-Food-Dispenser
 
-Universidad San Francisco de Quito   **Alimentando a nuestro seres queridos** Paula Campaña Donoso (00215572)   Juan Francisco Cisneros (00323665) Malena Loza
+Universidad San Francisco de Quito   
+
+**Alimentando a nuestro seres queridos** 
+
+Paula Campaña Donoso (00215572)   
+Juan Francisco Cisneros (00323665) Malena Loza
 
 NRC: 2767
 
